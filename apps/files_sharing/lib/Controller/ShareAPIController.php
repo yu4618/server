@@ -213,7 +213,7 @@ class ShareAPIController extends OCSController {
 			$result['share_with'] = $share->getPassword();
 			$result['share_with_displayname'] = $share->getPassword();
 
-			$result['password'] = $share->getPassword();
+			$result['password'] = '**********';
 
 			$result['send_password_by_talk'] = $share->getSendPasswordByTalk();
 
@@ -226,7 +226,7 @@ class ShareAPIController extends OCSController {
 			$result['token'] = $share->getToken();
 		} else if ($share->getShareType() === Share::SHARE_TYPE_EMAIL) {
 			$result['share_with'] = $share->getSharedWith();
-			$result['password'] = $share->getPassword();
+			$result['password'] = '**********';
 			$result['send_password_by_talk'] = $share->getSendPasswordByTalk();
 			$result['share_with_displayname'] = $this->getDisplayNameFromAddressBook($share->getSharedWith(), 'EMAIL');
 			$result['token'] = $share->getToken();
