@@ -52,7 +52,7 @@ class Internal extends Session {
 		set_error_handler([$this, 'trapError']);
 		$this->invoke('session_name', [$name]);
 		try {
-			$this->invoke('session_start');
+			$this->startSession();
 		} catch (\Exception $e) {
 			setcookie($this->invoke('session_name'), '', -1, \OC::$WEBROOT ?: '/');
 		}
@@ -102,7 +102,7 @@ class Internal extends Session {
 	public function clear() {
 		$this->invoke('session_unset');
 		$this->regenerateId();
-		$this->invoke('session_start', [], true);
+		$this->startSession();
 		$_SESSION = [];
 	}
 
@@ -208,6 +208,14 @@ class Internal extends Session {
 			}
 		} catch(\Error $e) {
 			$this->trapError($e->getCode(), $e->getMessage());
+		}
+	}
+
+	private function startSession() {
+		if (version_compare(PHP_VERSION, '7.3') === -1) {
+			$this->invoke('session_start');
+		} else {
+			$this->invoke('session_start', [['cookie_samesite' => 'Lax']]);
 		}
 	}
 }
