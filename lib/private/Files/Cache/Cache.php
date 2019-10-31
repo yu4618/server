@@ -464,6 +464,11 @@ class Cache implements ICache {
 	 */
 	public function remove($file) {
 		$entry = $this->get($file);
+
+		if ($entry === false) {
+			return;
+		}
+
 		$sql = 'DELETE FROM `*PREFIX*filecache` WHERE `fileid` = ?';
 		$this->connection->executeQuery($sql, array($entry['fileid']));
 		if ($entry['mimetype'] === 'httpd/unix-directory') {
