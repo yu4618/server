@@ -46,6 +46,7 @@ use OC\AppFramework\Middleware\Security\SecurityMiddleware;
 use OC\AppFramework\Middleware\SessionMiddleware;
 use OC\AppFramework\Utility\SimpleContainer;
 use OC\Core\Middleware\TwoFactorMiddleware;
+use OC\PsrLoggerAdapter;
 use OC\ServerContainer;
 use OCA\WorkflowEngine\Manager;
 use OCP\AppFramework\Http\IOutput;
@@ -65,6 +66,7 @@ use OCP\IServerContainer;
 use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
+use Psr\Log\LoggerInterface;
 
 class DIContainer extends SimpleContainer implements IAppContainer {
 
@@ -124,6 +126,8 @@ class DIContainer extends SimpleContainer implements IAppContainer {
 		$this->registerService(ILogger::class, function ($c) {
 			return new OC\AppFramework\Logger($this->server->query(ILogger::class), $c->query('AppName'));
 		});
+		// Psr logger
+		$this->registerAlias(LoggerInterface::class, PsrLoggerAdapter::class);
 
 		$this->registerService(IServerContainer::class, function () {
 			return $this->getServer();
