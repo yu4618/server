@@ -55,7 +55,7 @@
 		</div>
 
 		<div class="userActions">
-			<div v-if="canEdit && !loading.all" class="toggleUserActions">
+			<div v-if="!loading.all" class="toggleUserActions">
 				<Actions>
 					<ActionButton icon="icon-rename" @click="toggleEdit">
 						{{ t('settings', 'Edit User') }}
@@ -77,7 +77,6 @@
 <script>
 import { PopoverMenu, Actions, ActionButton } from 'nextcloud-vue'
 import ClickOutside from 'vue-click-outside'
-import { getCurrentUser } from '@nextcloud/auth'
 
 import UserRowMixin from '../../mixins/UserRowMixin'
 export default {
@@ -142,10 +141,6 @@ export default {
 			}
 			return t('settings', '{size} used', { size: OC.Util.humanFileSize(0) })
 		},
-		canEdit() {
-			return getCurrentUser().uid !== this.user.id && this.user.id !== 'admin'
-		},
-
 	},
 	methods: {
 		hideMenu() {
