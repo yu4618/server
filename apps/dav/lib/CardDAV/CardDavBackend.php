@@ -929,6 +929,12 @@ class CardDavBackend implements BackendInterface, SyncSupport {
 				$query2->andWhere($query2->expr()->ilike('cp.value', $query->createNamedParameter('%' . $this->db->escapeLikeParameter($pattern) . '%')));
 			}
 		}
+		if(\array_key_exists('limit', $options)) {
+			$query2->setMaxResults($options['limit']);
+		}
+		if(\array_key_exists('offset', $options)) {
+			$query2->setFirstResult($options['offset']);
+		}
 
 		$query->select('c.carddata', 'c.uri')->from($this->dbCardsTable, 'c')
 			->where($query->expr()->in('c.id', $query->createFunction($query2->getSQL())));
