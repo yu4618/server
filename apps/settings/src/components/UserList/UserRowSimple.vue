@@ -33,7 +33,7 @@
 			{{ userSubAdminsGroupsLabels }}
 		</div>
 		<div class="quota">
-			{{ userQuota }} {{ usedSpace }}
+			{{ userQuota }} ({{ usedSpace }})
 		</div>
 		<div v-if="showConfig.showLanguages" class="languages">
 			{{ userLanguage.name }}
@@ -134,14 +134,17 @@ export default {
 		},
 		usedSpace() {
 			if (this.user.quota.used) {
-				return t('settings', 'of {size} used', { size: OC.Util.humanFileSize(this.user.quota.used) })
+				return t('settings', '{size} used', { size: OC.Util.humanFileSize(this.user.quota.used) })
 			}
-			return t('settings', 'of {size} used', { size: OC.Util.humanFileSize(0) })
+			return t('settings', '{size} used', { size: OC.Util.humanFileSize(0) })
 		},
 		canEdit() {
 			return getCurrentUser().uid !== this.user.id && this.user.id !== 'admin'
 		},
 		userQuota() {
+			if (this.user.quota.quota === 'none') {
+				return t('settings', 'Unlimited')
+			}
 			if (this.user.quota.quota >= 0) {
 				return t('settings', '{size}', { size: OC.Util.humanFileSize(this.user.quota.quota) })
 			}
