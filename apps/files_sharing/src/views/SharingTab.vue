@@ -85,11 +85,11 @@
 </template>
 
 <script>
-import { CollectionList } from 'nextcloud-vue-collections'
+import { CollectionList } from '@nextcloud/vue-collections'
 import { generateOcsUrl } from '@nextcloud/router'
-import Avatar from 'nextcloud-vue/dist/Components/Avatar'
+import Avatar from '@nextcloud/vue/dist/Components/Avatar'
 import axios from '@nextcloud/axios'
-import Tab from 'nextcloud-vue/dist/Components/AppSidebarTab'
+import Tab from '@nextcloud/vue/dist/Components/AppSidebarTab'
 
 import { shareWithTitle } from '../utils/SharedWithMe'
 import Share from '../models/Share'

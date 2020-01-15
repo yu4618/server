@@ -73,8 +73,8 @@
 <script>
 import $ from 'jquery'
 import axios from '@nextcloud/axios'
-import AppSidebar from 'nextcloud-vue/dist/Components/AppSidebar'
-import ActionButton from 'nextcloud-vue/dist/Components/ActionButton'
+import AppSidebar from '@nextcloud/vue/dist/Components/AppSidebar'
+import ActionButton from '@nextcloud/vue/dist/Components/ActionButton'
 import FileInfo from '../services/FileInfo'
 import LegacyTab from '../components/LegacyTab'
 import LegacyView from '../components/LegacyView'
@@ -237,7 +237,7 @@ export default {
 
 		isSystemTagsEnabled() {
 			return OCA && 'SystemTags' in OCA
-		}
+		},
 	},
 
 	watch: {
@@ -405,7 +405,7 @@ export default {
 			if (OCA.SystemTags && OCA.SystemTags.View) {
 				OCA.SystemTags.View.toggle()
 			}
-		}
+		},
 	},
 }
 </script>

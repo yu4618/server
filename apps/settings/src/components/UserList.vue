@@ -236,7 +236,7 @@
 
 <script>
 import userRow from './UserList/UserRow'
-import { Multiselect } from 'nextcloud-vue'
+import { Multiselect } from '@nextcloud/vue'
 import InfiniteLoading from 'vue-infinite-loading'
 import Vue from 'vue'
 
