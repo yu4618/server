@@ -22,42 +22,7 @@
 
 <template>
 	<div id="app-details-view" style="padding: 20px;">
-		
 		<div class="actions">
-			<div class="actions-buttons">
-				<input v-if="app.update"
-					class="update primary"
-					type="button"
-					:value="t('settings', 'Update to {version}', {version: app.update})"
-					:disabled="installing || loading(app.id)"
-					@click="update(app.id)">
-				<input v-if="app.canUnInstall"
-					class="uninstall"
-					type="button"
-					:value="t('settings', 'Remove')"
-					:disabled="installing || loading(app.id)"
-					@click="remove(app.id)">
-				<input v-if="app.active"
-					class="enable"
-					type="button"
-					:value="t('settings','Disable')"
-					:disabled="installing || loading(app.id)"
-					@click="disable(app.id)">
-				<input v-if="!app.active && (app.canInstall || app.isCompatible)"
-					v-tooltip.auto="enableButtonTooltip"
-					class="enable primary"
-					type="button"
-					:value="enableButtonText"
-					:disabled="!app.canInstall || installing || loading(app.id)"
-					@click="enable(app.id)">
-				<input v-else-if="!app.active"
-					v-tooltip.auto="forceEnableButtonTooltip"
-					class="enable force"
-					type="button"
-					:value="forceEnableButtonText"
-					:disabled="installing || loading(app.id)"
-					@click="forceEnable(app.id)">
-			</div>
 			<div class="app-groups">
 				<div v-if="app.active && canLimitToGroups(app)" class="groups-enable">
 					<input :id="prefix('groups_enable', app.id)"
@@ -153,7 +118,7 @@ import marked from 'marked'
 import dompurify from 'dompurify'
 
 import AppScore from './AppList/AppScore'
-import AppManagement from './AppManagement'
+import AppManagement from '../mixins/AppManagement'
 import PrefixMixin from './PrefixMixin'
 
 export default {
@@ -164,11 +129,6 @@ export default {
 	},
 	mixins: [AppManagement, PrefixMixin],
 	props: ['category', 'app'],
-	data() {
-		return {
-			groupCheckedAppsData: false,
-		}
-	},
 	computed: {
 		appstoreUrl() {
 			return `https://apps.nextcloud.com/apps/${this.app.id}`
