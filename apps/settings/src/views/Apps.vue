@@ -83,7 +83,17 @@
 		<AppContent class="app-settings-content" :class="{ 'icon-loading': loadingList }">
 			<AppList :category="category" :app="currentApp" :search="searchQuery" />
 		</AppContent>
-		<AppSidebar v-if="id && currentApp" @close="hideAppDetails">
+		<AppSidebar
+			v-if="id && currentApp"
+			v-bind="currentAppSidebar"
+			@close="hideAppDetails">
+			<template #header v-if="!currentApp.screenshot && !currentApp.preview">
+			</template>
+			<template #primary-actions>
+				<div v-if="currentApp.licence" class="app-licence">
+					{{ currentApp.licence }}
+				</div>
+			</template>
 			<AppDetails :category="category" :app="currentApp" />
 		</AppSidebar>
 	</Content>
@@ -154,6 +164,24 @@ export default {
 		},
 		settings() {
 			return this.$store.getters.getServerData
+		},
+
+		// sidebar app binding
+		currentAppSidebar() {
+			const author = Array.isArray(this.currentApp.author)
+				? this.currentApp.author.join(', ')
+				: this.currentApp.author
+			const subtitle = t('settings', 'by {author}', { author })
+
+			return {
+				subtitle,
+				background: this.currentApp.previewAsIcon
+					? this.currentApp.preview
+					: this.currentApp.screenshot,
+				compact: !this.currentApp.screenshot,
+				title: this.currentApp.name,
+
+			}
 		},
 	},
 	watch: {
