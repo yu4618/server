@@ -86,12 +86,22 @@
 		<AppSidebar
 			v-if="id && currentApp"
 			v-bind="currentAppSidebar"
+			:class="{'app-sidebar--without-background': !currentAppSidebar.background}"
 			@close="hideAppDetails">
-			<template #header v-if="!currentApp.screenshot && !currentApp.preview">
+			<template #header v-if="!currentAppSidebar.background">
+				<div class="app-sidebar-header__figure--default-app-icon icon-settings-dark" />
 			</template>
 			<template #primary-actions>
-				<div v-if="currentApp.licence" class="app-licence">
-					{{ currentApp.licence }}
+				<div v-if="currentApp.level === 300 || currentApp.level === 200 || hasRating" class="app-level">
+					<span v-if="currentApp.level === 300"
+						v-tooltip.auto="t('settings', 'This app is supported via your current Nextcloud subscription.')"
+						class="supported icon-checkmark-color">
+						{{ t('settings', 'Supported') }}</span>
+					<span v-if="currentApp.level === 200"
+						v-tooltip.auto="t('settings', 'Featured apps are developed by and within the community. They offer central functionality and are ready for production use.')"
+						class="official icon-checkmark">
+						{{ t('settings', 'Featured') }}</span>
+					<AppScore v-if="hasRating" :score="currentApp.appstoreData.ratingOverall" />
 				</div>
 			</template>
 			<AppDetails :category="category" :app="currentApp" />
@@ -171,13 +181,15 @@ export default {
 			const author = Array.isArray(this.currentApp.author)
 				? this.currentApp.author.join(', ')
 				: this.currentApp.author
-			const subtitle = t('settings', 'by {author}', { author })
+			const license = t('settings', '{license}-licensed', { license: ('' + this.currentApp.licence).toUpperCase() })
+
+			const subtitle = t('settings', 'by {author}\n{license}', { author, license })
 
 			return {
 				subtitle,
-				background: this.currentApp.previewAsIcon
-					? this.currentApp.preview
-					: this.currentApp.screenshot,
+				background: this.currentApp.screenshot
+					? this.currentApp.screenshot
+					: this.currentApp.preview,
 				compact: !this.currentApp.screenshot,
 				title: this.currentApp.name,
 
@@ -217,3 +229,32 @@ export default {
 	},
 }
 </script>
+
+<style lang="scss" scoped>
+#app-sidebar:not(.app-sidebar--without-background)::v-deep {
+	// with full screenshot, let's fill the figure
+	:not(.app-sidebar-header--compact) .app-sidebar-header__figure {
+		background-size: cover
+	}
+	// revert sidebar app icon so it is black
+	.app-sidebar-header--compact .app-sidebar-header__figure {
+		filter: invert(1);
+		background-size: 32px;
+	}
+}
+
+// default icon slot styling
+ #app-sidebar.app-sidebar--without-background::v-deep {
+	.app-sidebar-header__figure {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		&--default-app-icon {
+			height: 32px;
+			width: 32px;
+			background-size: 32px;
+		}
+	}
+}
+
+</style>
