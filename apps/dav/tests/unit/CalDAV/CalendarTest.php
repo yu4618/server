@@ -432,19 +432,22 @@ EOD;
 
 		// Test l10n
 		$l10n = $this->createMock(IL10N::class);
-		$l10n->expects($this->any())
-			->method('t')
-			->with('Busy')
-			->will($this->returnCallback(function ($text, $parameters = array()) {
-				return vsprintf($text, $parameters);
-			}));
+		if ($isShared) {
+			$l10n->expects($this->once())
+				->method('t')
+				->with('Busy')
+				->willReturn("Translated busy");
+		} else {
+			$l10n->expects($this->never());
+		}
 		$c = new Calendar($backend, $calendarInfo, $l10n, $this->config);
 
 		$calData = $c->getChild('event-1')->get();
 		$event = Reader::read($calData);
 
 		if ($isShared) {
-			$this->assertEquals($l10n->t('Busy'), $event->VEVENT->SUMMARY->getValue());
+
+			$this->assertEquals('Translated busy', $event->VEVENT->SUMMARY->getValue());
 		} else {
 			$this->assertEquals('Test Event', $event->VEVENT->SUMMARY->getValue());
 		}
