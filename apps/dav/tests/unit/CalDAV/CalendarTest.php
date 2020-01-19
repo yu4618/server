@@ -446,7 +446,6 @@ EOD;
 		$event = Reader::read($calData);
 
 		if ($isShared) {
-
 			$this->assertEquals('Translated busy', $event->VEVENT->SUMMARY->getValue());
 		} else {
 			$this->assertEquals('Test Event', $event->VEVENT->SUMMARY->getValue());
