@@ -29,7 +29,9 @@ declare(strict_types=1);
 
 namespace OCP\AppFramework\Db;
 
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Doctrine\DBAL\Types\Type;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 
@@ -192,7 +194,7 @@ abstract class QBMapper {
 		}
 
 		$qb->where(
-			$qb->expr()->eq('id', $qb->createNamedParameter($id, IQueryBuilder::PARAM_INT))
+			$qb->expr()->eq('id', $qb->createNamedParameter($id, Type::getType(Type::INTEGER)))
 		);
 		$qb->execute();
 
@@ -205,28 +207,21 @@ abstract class QBMapper {
 	 *
 	 * @param Entity $entity   The entity to get the types from
 	 * @param string $property The property of $entity to get the type for
-	 * @return int
+	 * @return Type
 	 * @since 16.0.0
 	 */
-	protected function getParameterTypeForProperty(Entity $entity, string $property): int {
+	protected function getParameterTypeForProperty(Entity $entity, string $property): Type {
 		$types = $entity->getFieldTypes();
 
-		if(!isset($types[ $property ])) {
-			return IQueryBuilder::PARAM_STR;
+		if (!isset($types[$property])) {
+			return Type::getType(Type::STRING);
 		}
 
-		switch($types[ $property ]) {
-			case 'int':
-			case 'integer':
-				return IQueryBuilder::PARAM_INT;
-			case 'string':
-				return IQueryBuilder::PARAM_STR;
-			case 'bool':
-			case 'boolean':
-				return IQueryBuilder::PARAM_BOOL;
+		try {
+			return Type::getType($types[$property]);
+		} catch (DBALException $e) {
+			return Type::getType(Type::STRING);
 		}
-
-		return IQueryBuilder::PARAM_STR;
 	}
 
 	/**
