@@ -365,6 +365,7 @@ class Setup {
 			];
 			return $error;
 		} catch (Exception $e) {
+			var_dump($e);
 			$error[] = [
 				'error' => 'Error while trying to create admin user: ' . $e->getMessage(),
 				'hint' => '',

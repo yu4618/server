@@ -51,6 +51,8 @@ class MySQL extends AbstractDatabase {
 
 		$this->createSpecificUser($username, $connection);
 
+		var_dump('Created admin user');
+
 		//create the database
 		$this->createDatabase($connection);
 
@@ -71,6 +73,7 @@ class MySQL extends AbstractDatabase {
 			$query = "CREATE DATABASE IF NOT EXISTS `$name` CHARACTER SET $characterSet COLLATE ${characterSet}_bin;";
 			$connection->executeUpdate($query);
 		} catch (\Exception $ex) {
+			var_dump($ex);
 			$this->logger->logException($ex, [
 				'message' => 'Database creation failed.',
 				'level' => ILogger::ERROR,
@@ -80,10 +83,12 @@ class MySQL extends AbstractDatabase {
 		}
 
 		try {
+			var_dump([$name, $user]);
 			//this query will fail if there aren't the right permissions, ignore the error
 			$query="GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER ON `$name` . * TO '$user'";
 			$connection->executeUpdate($query);
 		} catch (\Exception $ex) {
+			var_dump($ex);
 			$this->logger->logException($ex, [
 				'message' => 'Could not automatically grant privileges, this can be ignored if database user already had privileges.',
 				'level' => ILogger::DEBUG,
@@ -102,12 +107,13 @@ class MySQL extends AbstractDatabase {
 			$password = $this->dbPassword;
 			// we need to create 2 accounts, one for global use and one for local user. if we don't specify the local one,
 			// the anonymous user would take precedence when there is one.
-			$query = "CREATE USER '$name'@'localhost' IDENTIFIED WITH mysql_native_password BY '$password'";
+			$query = "CREATE USER '$name'@'localhost' IDENTIFIED BY '$password'";
 			$connection->executeUpdate($query);
-			$query = "CREATE USER '$name'@'%' IDENTIFIED WITH mysql_native_password BY '$password'";
+			$query = "CREATE USER '$name'@'%' IDENTIFIED BY '$password'";
 			$connection->executeUpdate($query);
 		}
 		catch (\Exception $ex){
+			var_dump($ex);
 			$this->logger->logException($ex, [
 				'message' => 'Database user creation failed.',
 				'level' => ILogger::ERROR,
@@ -163,6 +169,7 @@ class MySQL extends AbstractDatabase {
 				}
 			}
 		} catch (\Exception $ex) {
+			var_dump($ex);
 			$this->logger->logException($ex, [
 				'message' => 'Can not create a new MySQL user, will continue with the provided user.',
 				'level' => ILogger::INFO,

@@ -193,6 +193,8 @@ class Install extends Command {
 		if ($db === 'oci') {
 			$options['dbtablespace'] = $input->getParameterOption('--database-table-space', '');
 		}
+		var_dump($options);
+		
 		return $options;
 	}
 
