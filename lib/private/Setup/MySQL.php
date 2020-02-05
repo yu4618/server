@@ -109,7 +109,11 @@ class MySQL extends AbstractDatabase {
 			// the anonymous user would take precedence when there is one.
 			$query = "CREATE USER '$name'@'localhost' IDENTIFIED BY '$password'";
 			$connection->executeUpdate($query);
+			$query = "ALTER USER '$name'@'localhost' IDENTIFIED WITH mysql_native_password BY '$password'";
+			$connection->executeUpdate($query);
 			$query = "CREATE USER '$name'@'%' IDENTIFIED BY '$password'";
+			$connection->executeUpdate($query);
+			$query = "ALTER USER '$name'@'%' IDENTIFIED WITH mysql_native_password BY '$password'";
 			$connection->executeUpdate($query);
 		}
 		catch (\Exception $ex){
